@@ -1,0 +1,21 @@
+name: pixeldoctor
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+      - langchain
+      - langchain-community
+      - langchain-openai
+      - langchain-text-splitters
+      - langgraph
+      - faiss-cpu
+      - pypdf
+      - tiktoken
+      - fastapi
+      - uvicorn[standard]
+      - pydantic
+      - python-dotenv
+      - google-generativeai

@@ -1,0 +1,19 @@
+{
+  "role": "patient",
+  "question": "이 결과가 암이라는 뜻인가요?",
+  "report_json": {
+    "doctor_summary": "...",
+    "patient_friendly": "...",
+    "risk_level": "moderate",
+    "recommendations": ["영상의학 판독 확인", "담당 의사 상담"],
+    "evidence": [
+      {
+        "json_key": "ml_results.risk_score",
+        "explanation_for_doctor": "AI-derived risk score is moderate.",
+        "explanation_for_patient": "AI가 CT 영상 정보를 종합했을 때 추가 확인이 필요하다고 본 결과입니다."
+      }
+    ]
+  },
+  "model_result_json": {},
+  "chat_history": []
+}

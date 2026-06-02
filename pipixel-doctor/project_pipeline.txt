@@ -1,0 +1,341 @@
+pixel-doctor-ai/
+│
+├── main.py                          
+│   # FastAPI 실행 엔트리 포인트
+│   # 앱 생성 및 router 연결
+│
+├── config.py                        
+│   # 환경 변수 및 전역 설정 관리
+│   # 모델명, API Key, timeout, retry 설정 등
+│
+├── requirements.txt                 
+│   # 프로젝트 의존성 패키지 목록
+│
+├── .env                             
+│   # API Key 및 민감한 환경 변수 저장
+│
+├── README.md                        
+│   # 프로젝트 설명 및 실행 방법 문서
+│
+├── api/                             
+│   # 외부 요청을 처리하는 API Layer
+│
+│   ├── __init__.py                  
+│
+│   ├── dependencies.py              
+│   │   # FastAPI dependency 관리
+│   │   # DB session, auth 등 주입
+│
+│   └── routes/                      
+│       # API endpoint 모음
+│
+│       ├── diagnose.py              
+│       │   # 진단 요청 API
+│       │   # CT/Xray JSON 입력 받아 서비스 호출
+│
+│       └── health.py                
+│           # 서버 상태 확인용 health check API
+│
+├── services/                        
+│   # 비즈니스 orchestration layer
+│   # API와 graph 사이 중간 계층
+│
+│   ├── __init__.py
+│
+│   └── diagnose_service.py          
+│       # LangGraph 실행 orchestration
+│       # graph invoke 및 결과 후처리 담당
+│
+├── core/                            
+│   # 핵심 AI 파이프라인 로직
+│
+│   ├── __init__.py
+│
+│   ├── graph.py                     
+│   │   # LangGraph workflow 정의
+│   │   # node 및 edge 연결
+│
+│   ├── state.py                     
+│   │   # LangGraph에서 사용하는 State 정의
+│   │   # TypedDict 또는 Pydantic 기반
+│
+│   ├── edges.py                     
+│   │   # 조건부 분기(router) 로직
+│   │   # validator 실패 시 fallback 연결 등
+│
+│   ├── nodes/                       
+│   │   # 그래프의 각 node 함수 모음
+│
+│   │   ├── __init__.py
+│   │
+│   │   ├── summarizer/              
+│   │   │   # 진단 결과 요약 단계
+│   │   │
+│   │   │   ├── diagnose_summarizer.py
+│   │   │   │   # 원본 CT/Xray JSON 요약 생성
+│   │   │   │
+│   │   │   └── summary_validator.py
+│   │   │       # summary 품질 및 형식 검증
+│   │
+│   │   ├── doctor/                  
+│   │   │   # 의사용 설명 생성 pipeline
+│   │   │
+│   │   │   ├── doctor_title_generator.py
+│   │   │   │   # 의사용 제목 생성
+│   │   │   │
+│   │   │   ├── doctor_title_validator.py
+│   │   │   │   # 의사용 제목 검증
+│   │   │   │
+│   │   │   ├── doctor_explainer.py
+│   │   │   │   # 의사용 전문 설명 생성
+│   │   │   │
+│   │   │   └── doctor_result_validator.py
+│   │   │       # 의사용 결과 검증
+│   │
+│   │   ├── patient/                 
+│   │   │   # 환자용 설명 생성 pipeline
+│   │   │
+│   │   │   ├── patient_title_generator.py
+│   │   │   │   # 환자 친화적 제목 생성
+│   │   │   │
+│   │   │   ├── patient_title_validator.py
+│   │   │   │   # 환자 제목 검증
+│   │   │   │
+│   │   │   ├── patient_explainer.py
+│   │   │   │   # 환자 눈높이 설명 생성
+│   │   │   │
+│   │   │   └── patient_result_validator.py
+│   │   │       # 환자용 결과 검증
+│   │
+│   │   ├── retrieval/               
+│   │   │   # 논문 및 guideline retrieval node
+│   │   │
+│   │   │   └── medical_reference_retriever.py
+│   │   │       # 관련 논문/가이드라인 검색
+│   │
+│   │   ├── aggregation/             
+│   │   │   # 최종 결과 통합 단계
+│   │   │
+│   │   │   ├── compare_response.py
+│   │   │   │   # doctor/patient 결과 비교
+│   │   │   │
+│   │   │   ├── followup_generator.py
+│   │   │   │   # 후속 질문 및 추천 생성
+│   │   │   │
+│   │   │   └── aggregate_results.py
+│   │   │       # 최종 응답 구조 생성
+│   │
+│   │   └── safety/                  
+│   │       # 의료 안전성 관련 node
+│   │
+│   │       ├── hallucination_validator.py
+│   │       │   # hallucination 탐지
+│   │       │
+│   │       ├── medical_safety_validator.py
+│   │       │   # 의료 위험 표현 검증
+│   │       │
+│   │       └── disclaimer_generator.py
+│   │           # 의료 disclaimer 추가
+│
+├── agents/                          
+│   # Persona Agent 설정
+│
+│   ├── __init__.py
+│
+│   ├── doctor_agent.py              
+│   │   # 의사 페르소나 agent 정의
+│   │
+│   └── patient_agent.py             
+│       # 환자 페르소나 agent 정의
+│
+├── prompts/                         
+│   # Prompt 관리
+│
+│   ├── v1/                          
+│   │   # 버전별 prompt 저장
+│   │
+│   │   ├── summarizer_prompts.py
+│   │   │   # 요약 prompt 모음
+│   │   │
+│   │   ├── doctor_prompts.py
+│   │   │   # 의사용 prompt 모음
+│   │   │
+│   │   ├── patient_prompts.py
+│   │   │   # 환자용 prompt 모음
+│   │   │
+│   │   ├── validator_prompts.py
+│   │   │   # 검증용 prompt 모음
+│   │   │
+│   │   └── aggregation_prompts.py
+│   │       # 결과 통합 prompt 모음
+│   │
+│   ├── shared/                      
+│   │   # 공통 prompt 모음
+│   │
+│   │   ├── system_prompts.py
+│   │   │   # 공통 system prompt
+│   │   │
+│   │   └── safety_prompts.py
+│   │       # 안전성 관련 prompt
+│   │
+│   └── templates/                   
+│       # YAML 기반 prompt template
+│
+│       ├── diagnosis_template.yaml
+│       │   # 진단 설명 템플릿
+│       │
+│       └── explanation_template.yaml
+│           # explanation 템플릿
+│
+├── retrieval/                       
+│   # RAG 및 논문 retrieval 시스템
+│
+│   ├── __init__.py
+│
+│   ├── embeddings.py                
+│   │   # embedding 생성 로직
+│   │
+│   ├── vector_store.py              
+│   │   # vector DB 관리
+│   │
+│   ├── paper_retriever.py           
+│   │   # 논문 retrieval
+│   │
+│   ├── guideline_retriever.py       
+│   │   # 의료 guideline retrieval
+│   │
+│   └── reference_ranker.py          
+│       # retrieval 결과 ranking
+│
+├── database/                        
+│   # DB layer
+│
+│   ├── __init__.py
+│
+│   ├── db_manager.py                
+│   │   # DB 연결 관리
+│   │
+│   ├── schemas.py                   
+│   │   # Pydantic schema 정의
+│   │
+│   ├── models.py                    
+│   │   # SQLAlchemy ORM 모델
+│   │
+│   └── repositories/                
+│       # DB query abstraction
+│
+│       ├── patient_repository.py
+│       │   # 환자 정보 CRUD
+│       │
+│       └── diagnosis_repository.py
+│           # 진단 결과 CRUD
+│
+├── evaluation/                      
+│   # AI 출력 품질 평가 시스템
+│
+│   ├── __init__.py
+│
+│   ├── metrics.py                   
+│   │   # 평가 metric 계산
+│   │
+│   ├── llm_judge.py                 
+│   │   # LLM 기반 품질 평가
+│   │
+│   ├── regression_test.py           
+│   │   # prompt/model regression test
+│   │
+│   └── datasets/                    
+│       # benchmark dataset 저장
+│
+│       ├── golden_dataset.json
+│       │   # 정답 기준 데이터셋
+│       │
+│       └── benchmark_cases.json
+│           # 테스트 케이스 모음
+│
+├── observability/                   
+│   # tracing/logging/monitoring
+│
+│   ├── __init__.py
+│
+│   ├── logger.py                    
+│   │   # 로깅 설정
+│   │
+│   ├── langsmith.py                 
+│   │   # LangSmith tracing 연동
+│   │
+│   ├── telemetry.py                 
+│   │   # 메트릭 수집
+│   │
+│   └── tracing.py                   
+│       # graph tracing 로직
+│
+├── utils/                           
+│   # 공통 유틸 함수
+│
+│   ├── __init__.py
+│
+│   ├── model_factory.py             
+│   │   # LLM 생성 및 fallback 관리
+│   │
+│   ├── retry.py                     
+│   │   # retry utility
+│   │
+│   ├── json_parser.py               
+│   │   # JSON parsing utility
+│   │
+│   ├── response_formatter.py        
+│   │   # 응답 formatting
+│   │
+│   └── token_counter.py             
+│       # token usage 계산
+│
+├── memory/                          
+│   # 세션 및 대화 memory 관리
+│
+│   ├── __init__.py
+│
+│   └── session_store.py             
+│       # 사용자 session 저장
+│
+├── data/                            
+│   # 샘플 및 테스트 데이터
+│
+│   ├── sample_ct_result.json        
+│   │   # CT 예시 데이터
+│   │
+│   ├── sample_xray_result.json      
+│   │   # Xray 예시 데이터
+│   │
+│   └── sample_patient_case.json     
+│       # 환자 사례 예시
+│
+├── tests/                           
+│   # 테스트 코드
+│
+│   ├── test_graph.py                
+│   │   # graph workflow 테스트
+│   │
+│   ├── test_nodes.py                
+│   │   # node 단위 테스트
+│   │
+│   ├── test_retrieval.py            
+│   │   # retrieval 테스트
+│   │
+│   ├── test_validators.py           
+│   │   # validator 테스트
+│   │
+│   └── test_prompts.py              
+│       # prompt regression 테스트
+│
+└── docs/                            
+    # 프로젝트 문서
+│
+    ├── architecture.md              
+    │   # 전체 아키텍처 설명
+    │
+    ├── graph_flow.md                
+    │   # LangGraph flow 설명
+    │
+    └── api_spec.md                  
+        # API 명세 문서

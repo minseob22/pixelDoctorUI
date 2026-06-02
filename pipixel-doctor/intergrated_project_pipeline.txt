@@ -1,0 +1,42 @@
+pixel-doctor-ai/
+│
+├── main.py
+├── config.py
+│
+├── core/
+│   ├── graph.py
+│   ├── state.py
+│   │
+│   ├── nodes/
+│   │   ├── preprocessing/
+│   │   ├── doctor/
+│   │   ├── patient/
+│   │   └── aggregator/
+│
+├── rag/
+│
+├── prompts/
+│   └── v1/
+│
+├── database/
+│
+├── data/
+│
+├── utils/
+│
+├── chat_graph/          ← 여기 추가
+│   ├── __init__.py
+│   ├── graph.py
+│   ├── nodes.py
+│   ├── prompts.py
+│
+├── schemas.py           ← chat schema
+├── safety.py
+│
+├── test_preprocessing.py
+├── test_rag.py
+├── test_doctor_summary.py
+├── test_literature_grounded.py
+├── run_chat_graph_tests.py
+│
+└── requirements.txt
