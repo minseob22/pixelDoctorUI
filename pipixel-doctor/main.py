@@ -251,6 +251,34 @@ def chat(request: dict):
 
         "safety_check":
             "passed",
+
+        "retrieved_docs": [],
+
+        "retrieval_scores": [],
+
+        "retrieval_quality":
+            "insufficient",
+
+        "retrieval_attempts":
+            0,
+
+        "max_retrieval_attempts":
+            2,
+
+        "query_rewrite":
+            None,
+
+        "retry_count":
+            0,
+
+        "max_retries":
+            1,
+
+        "needs_regeneration":
+            False,
+
+        "fallback_reason":
+            None,
     }
 
     result = chat_graph.invoke(

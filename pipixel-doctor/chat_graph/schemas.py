@@ -70,3 +70,13 @@ class ChatGraphState(TypedDict, total=False):
     answer: str
     safety_check: SafetyCheck
     used_context: list[str]
+    retrieved_docs: list[dict[str, Any]]
+    retrieval_scores: list[float]
+    retrieval_quality: str
+    retrieval_attempts: int
+    max_retrieval_attempts: int
+    query_rewrite: str | None
+    retry_count: int
+    max_retries: int
+    needs_regeneration: bool
+    fallback_reason: str | None
